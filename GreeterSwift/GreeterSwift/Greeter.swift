@@ -14,7 +14,7 @@ struct Greeter {
 
 enum Client {
     case normal//不好扩展
-    case editTime(morning: Int, afternoon: Int, evening: Int)//可编辑时间
+    case editTime(morning: UInt, afternoon: UInt, evening: UInt)//可编辑时间
     
     func outputString(output: Output = .normalOut) -> String {
         switch self {
@@ -25,12 +25,19 @@ enum Client {
         }
     }
     
-    private func outputBy(output: Output, morning: Int = 6, afternoon: Int = 12, evening: Int = 18) -> String {
+    private func outputBy(output: Output, morning: UInt = 6, afternoon: UInt = 12, evening: UInt = 18) -> String {
+        guard morning < 24,
+              afternoon < 24,
+              evening < 24 else {
+                assert(true, "超过最大数")
+            return ""
+        }
+        
         let calendar = Calendar.current
         let now = Date()
-        let morning_today = calendar.date(bySettingHour: morning, minute: 0, second: 0, of: now)!
-        let afternoon_today = calendar.date(bySettingHour: afternoon, minute: 0, second: 0, of: now)!
-        let evening_today = calendar.date(bySettingHour: evening, minute: 0, second: 0, of: now)!
+        let morning_today = calendar.date(bySettingHour: Int(morning), minute: 0, second: 0, of: now)!
+        let afternoon_today = calendar.date(bySettingHour: Int(afternoon), minute: 0, second: 0, of: now)!
+        let evening_today = calendar.date(bySettingHour: Int(evening), minute: 0, second: 0, of: now)!
         if now > morning_today && now <= afternoon_today {
             return output.morning
         } else if now > afternoon_today && now <= evening_today {
